@@ -1,0 +1,322 @@
+/* FRNC-5Pro  –  Stylesheet */
+
+:root {
+  --primary:    #1a5c8e;
+  --primary-dk: #0d3d62;
+  --accent:     #e07820;
+  --bg:         #f4f6f9;
+  --card-bg:    #ffffff;
+  --text:       #222;
+  --muted:      #666;
+  --border:     #d0d7de;
+  --danger:     #c0392b;
+  --warn-bg:    #fff3cd;
+  --warn-txt:   #856404;
+  --radius:     8px;
+  --shadow:     0 2px 8px rgba(0,0,0,.10);
+}
+
+/* ---------- Reset & Base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.55;
+}
+a { color: var(--primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ---------- Header ---------- */
+.header {
+  background: linear-gradient(135deg, var(--primary-dk) 0%, var(--primary) 100%);
+  color: #fff;
+  padding: 0 24px;
+}
+.header-inner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 14px 0;
+}
+.logo { font-size: 26px; }
+.header-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  flex: 1;
+}
+.header-sub {
+  font-size: 12px;
+  opacity: .8;
+  white-space: nowrap;
+}
+
+/* ---------- Nav ---------- */
+.nav {
+  background: var(--primary);
+  display: flex;
+  gap: 2px;
+  padding: 0 24px;
+}
+.nav a {
+  color: rgba(255,255,255,.85);
+  padding: 8px 14px;
+  font-size: 13px;
+  border-bottom: 3px solid transparent;
+}
+.nav a:hover {
+  color: #fff;
+  background: rgba(255,255,255,.1);
+  border-bottom-color: var(--accent);
+  text-decoration: none;
+}
+
+/* ---------- Layout ---------- */
+.container {
+  max-width: 1100px;
+  margin: 24px auto;
+  padding: 0 20px;
+}
+
+/* ---------- Cards ---------- */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px 24px;
+  margin-bottom: 20px;
+}
+.card h2 {
+  margin: 0 0 16px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--primary);
+  border-bottom: 2px solid var(--primary);
+  padding-bottom: 6px;
+}
+.card h3 {
+  margin: 0 0 16px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--primary);
+  border-bottom: 2px solid var(--primary);
+  padding-bottom: 6px;
+}
+.card h4 {
+  margin: 14px 0 8px;
+  font-size: 13px;
+  color: var(--muted);
+  border-bottom: 1px dashed var(--border);
+  padding-bottom: 4px;
+}
+
+/* ---------- Form Fields ---------- */
+.grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+
+@media (max-width: 700px) {
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.field label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.unit { color: var(--accent); font-weight: 400; }
+
+input[type=number], input[type=text], select {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 7px 10px;
+  font-size: 13px;
+  width: 100%;
+  background: #fafbfc;
+  color: var(--text);
+  transition: border-color .2s;
+}
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: #fff;
+}
+
+/* ---------- Buttons ---------- */
+.btn-primary, .btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 22px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: background .15s;
+}
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--primary-dk); text-decoration: none; }
+.btn-secondary {
+  background: #e8edf2;
+  color: var(--text);
+}
+.btn-secondary:hover { background: #d0d9e3; }
+.btn-sm {
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: #f0f4f8;
+  cursor: pointer;
+  margin-left: 10px;
+}
+.btn-sm:hover { background: #dce5ee; }
+
+.submit-row {
+  display: flex;
+  gap: 12px;
+  margin: 24px 0;
+  flex-wrap: wrap;
+}
+
+/* ---------- Alerts ---------- */
+.alert {
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  margin-bottom: 18px;
+  font-size: 13px;
+}
+.alert-error {
+  background: #fde8e6;
+  border: 1px solid #f5c6c0;
+  color: var(--danger);
+}
+
+/* ---------- Results ---------- */
+.results-header {
+  margin-bottom: 6px;
+}
+.results-header h2 {
+  margin: 0 0 4px;
+  font-size: 18px;
+  color: var(--primary-dk);
+}
+.case-info {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0 0 16px;
+}
+
+.result-card { margin-bottom: 20px; }
+
+/* KPI boxes */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 14px;
+  margin-top: 6px;
+}
+.kpi-box {
+  background: linear-gradient(145deg, #f0f5fb, #e6edf6);
+  border: 1px solid #c8d8ea;
+  border-radius: var(--radius);
+  padding: 14px 12px;
+  text-align: center;
+}
+.kpi-label { font-size: 11px; color: var(--muted); margin-bottom: 6px; }
+.kpi-value { font-size: 24px; font-weight: 700; color: var(--primary-dk); }
+.kpi-unit  { font-size: 11px; color: var(--accent); margin-top: 2px; }
+
+/* Data tables */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.data-table th, .data-table td {
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  text-align: left;
+}
+.data-table thead tr th {
+  background: #e8edf5;
+  font-weight: 700;
+  color: var(--primary);
+}
+.data-table tr:nth-child(even) td { background: #f9fbfd; }
+.row-released td { background: #fff8e6 !important; font-weight: 600; }
+.row-total td { background: #e6f0e6 !important; }
+.row-stack td { background: #fbe9e7 !important; }
+
+/* Warning highlight */
+.warn { color: var(--danger); font-weight: 700; }
+
+/* Chart container */
+.chart-container {
+  overflow-x: auto;
+  margin-top: 10px;
+  background: #fafbfc;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 8px;
+}
+
+/* Convection bank sub-card */
+.conv-bank-card {
+  border: 1px solid #cce0f0;
+  border-radius: var(--radius);
+  padding: 14px;
+  margin-top: 14px;
+  background: #f4f9ff;
+  position: relative;
+}
+.conv-bank-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--primary);
+}
+.remove-bank-btn {
+  font-size: 11px;
+  background: #fee;
+  border: 1px solid #f5c6c0;
+  color: var(--danger);
+  padding: 2px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.remove-bank-btn:hover { background: #fdd; }
+
+/* ---------- Footer ---------- */
+.footer {
+  text-align: center;
+  padding: 14px;
+  font-size: 11px;
+  color: var(--muted);
+  border-top: 1px solid var(--border);
+  background: var(--card-bg);
+  margin-top: 30px;
+}
+
+/* ---------- Print styles ---------- */
+@media print {
+  .nav, .submit-row, #add-bank-btn { display: none; }
+  .card { box-shadow: none; border: 1px solid #ccc; }
+}

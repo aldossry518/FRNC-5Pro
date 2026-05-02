@@ -1,0 +1,307 @@
+{% extends "base.html" %}
+{% block title %}FRNC-5Pro – 计算结果{% endblock %}
+
+{% block content %}
+<div class="results-header">
+  <h2>📊 计算结果 / Calculation Results</h2>
+  <p class="case-info">
+    <strong>{{ result.case_name }}</strong> &nbsp;|&nbsp; {{ result.heater_service }}
+  </p>
+</div>
+
+<!-- ===== Overall Summary ================================================== -->
+<section class="card result-card">
+  <h3>🔢 总体汇总 / Overall Summary</h3>
+  <div class="summary-grid">
+
+    <div class="kpi-box">
+      <div class="kpi-label">总热负荷 / Total Duty</div>
+      <div class="kpi-value">{{ "%.1f"|format(result.Q_total_process_kW) }}</div>
+      <div class="kpi-unit">kW</div>
+    </div>
+    <div class="kpi-box">
+      <div class="kpi-label">热效率 / Thermal Efficiency</div>
+      <div class="kpi-value">{{ "%.2f"|format(result.thermal_efficiency_pct) }}</div>
+      <div class="kpi-unit">%</div>
+    </div>
+    <div class="kpi-box">
+      <div class="kpi-label">过桥温度 / Bridgewall Temp</div>
+      <div class="kpi-value">{{ "%.1f"|format(result.T_BWT_C) }}</div>
+      <div class="kpi-unit">°C</div>
+    </div>
+    <div class="kpi-box">
+      <div class="kpi-label">烟囱温度 / Stack Temp</div>
+      <div class="kpi-value">{{ "%.1f"|format(result.T_stack_C) }}</div>
+      <div class="kpi-unit">°C</div>
+    </div>
+    <div class="kpi-box">
+      <div class="kpi-label">绝热火焰温度 / AFT</div>
+      <div class="kpi-value">{{ "%.1f"|format(result.T_AFT_C) }}</div>
+      <div class="kpi-unit">°C</div>
+    </div>
+    <div class="kpi-box">
+      <div class="kpi-label">燃料量 / Fuel Flow</div>
+      <div class="kpi-value">{{ "%.4f"|format(result.W_fuel_kg_s) }}</div>
+      <div class="kpi-unit">kg/s</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== Heat Balance ==================================================== -->
+<section class="card result-card">
+  <h3>⚖️ 热平衡 / Heat Balance</h3>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>项目 / Item</th>
+        <th>数值 / Value (kW)</th>
+        <th>占比 / Fraction (%)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="row-released">
+        <td>燃料燃烧热 / Heat Released (LHV)</td>
+        <td>{{ "%.1f"|format(result.Q_released_kW) }}</td>
+        <td>100.0</td>
+      </tr>
+      <tr>
+        <td>辐射室吸热 / Radiant Absorption</td>
+        <td>{{ "%.1f"|format(result.Q_radiant_kW) }}</td>
+        <td>{{ "%.1f"|format(result.Q_radiant_kW / result.Q_released_kW * 100) }}</td>
+      </tr>
+      <tr>
+        <td>对流室吸热 / Convection Absorption</td>
+        <td>{{ "%.1f"|format(result.Q_convection_kW) }}</td>
+        <td>{{ "%.1f"|format(result.Q_convection_kW / result.Q_released_kW * 100) }}</td>
+      </tr>
+      <tr class="row-total">
+        <td><strong>介质总吸热 / Total Process Heat</strong></td>
+        <td><strong>{{ "%.1f"|format(result.Q_total_process_kW) }}</strong></td>
+        <td><strong>{{ "%.2f"|format(result.thermal_efficiency_pct) }}</strong></td>
+      </tr>
+      <tr>
+        <td>炉壁散热损失 / Shell Losses</td>
+        <td>{{ "%.1f"|format(result.Q_losses_kW) }}</td>
+        <td>{{ "%.1f"|format(result.Q_losses_kW / result.Q_released_kW * 100) }}</td>
+      </tr>
+      <tr class="row-stack">
+        <td>烟气带走热量 / Stack Loss</td>
+        <td>{{ "%.1f"|format(result.Q_stack_kW) }}</td>
+        <td>{{ "%.1f"|format(result.Q_stack_kW / result.Q_released_kW * 100) }}</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ===== Combustion Summary ============================================== -->
+<section class="card result-card">
+  <h3>🔥 燃烧参数 / Combustion Data</h3>
+  <div class="grid-2">
+    <table class="data-table">
+      <tr><th>燃料 / Fuel</th><td>{{ result.fuel_name }}</td></tr>
+      <tr><th>低热值 LHV</th><td>{{ "%.0f"|format(result.LHV_kJ_kg) }} kJ/kg</td></tr>
+      <tr><th>过量空气 / Excess Air</th><td>{{ "%.1f"|format(result.excess_air_pct) }} %</td></tr>
+      <tr><th>烟气量 / Flue Gas Flow</th><td>{{ "%.3f"|format(result.W_flue_kg_s) }} kg/s</td></tr>
+    </table>
+    <table class="data-table">
+      <tr><th>绝热火焰温度 AFT</th><td>{{ "%.1f"|format(result.T_AFT_C) }} °C</td></tr>
+      <tr><th>过桥温度 BWT</th><td>{{ "%.1f"|format(result.T_BWT_C) }} °C</td></tr>
+      <tr><th>烟囱温度 Stack</th><td>{{ "%.1f"|format(result.T_stack_C) }} °C</td></tr>
+      <tr><th>可用热分率 η_av</th><td>{{ "%.3f"|format(result.available_heat_fraction) }}</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ===== Radiant Section ================================================== -->
+<section class="card result-card">
+  <h3>☀️ 辐射室 / Radiant Section</h3>
+  <div class="grid-2">
+    <table class="data-table">
+      <tr><th>辐射吸热量 / Q_radiant</th>
+          <td>{{ "%.1f"|format(result.radiant.Q_radiant_kW) }} kW</td></tr>
+      <tr><th>交换因子 / Exchange Factor F</th>
+          <td>{{ "%.4f"|format(result.radiant.F_exchange) }}</td></tr>
+      <tr><th>冷平面面积 A_cp</th>
+          <td>{{ "%.2f"|format(result.radiant.A_cp_m2) }} m²</td></tr>
+      <tr><th>平均热流密度 / Avg Heat Flux</th>
+          <td>{{ "%.2f"|format(result.radiant.q_avg_kW_m2) }} kW/m²</td></tr>
+      <tr><th>峰值热流密度 / Peak Heat Flux</th>
+          <td>{{ "%.2f"|format(result.radiant.q_max_kW_m2) }} kW/m²</td></tr>
+    </table>
+    <table class="data-table">
+      <tr><th>管壁平均温度 / Avg Tube Skin Temp</th>
+          <td>{{ "%.1f"|format(result.radiant.T_tube_avg_C) }} °C</td></tr>
+      <tr><th>管壁最高温度 / Max Tube Skin Temp</th>
+          <td>
+            <span class="{% if result.radiant.T_tube_max_C > 650 %}warn{% endif %}">
+              {{ "%.1f"|format(result.radiant.T_tube_max_C) }} °C
+            </span>
+          </td></tr>
+      <tr><th>介质出口温度 / Process Outlet Temp</th>
+          <td>{{ "%.1f"|format(result.radiant.T_process_out_C) }} °C</td></tr>
+      <tr><th>热损失 / Heat Losses</th>
+          <td>{{ "%.1f"|format(result.radiant.Q_losses_kW) }} kW</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ===== Convection Section =============================================== -->
+{% if result.convection_banks %}
+<section class="card result-card">
+  <h3>💨 对流室 / Convection Section</h3>
+  {% for bank in result.convection_banks %}
+  <h4>管排 {{ loop.index }} / Bank {{ loop.index }}</h4>
+  <div class="grid-2">
+    <table class="data-table">
+      <tr><th>烟气入口温度 / Gas In</th>
+          <td>{{ "%.1f"|format(bank.T_gas_in_C) }} °C</td></tr>
+      <tr><th>烟气出口温度 / Gas Out</th>
+          <td>{{ "%.1f"|format(bank.T_gas_out_C) }} °C</td></tr>
+      <tr><th>介质入口温度 / Fluid In</th>
+          <td>{{ "%.1f"|format(bank.T_proc_in_C) }} °C</td></tr>
+      <tr><th>介质出口温度 / Fluid Out</th>
+          <td>{{ "%.1f"|format(bank.T_proc_out_C) }} °C</td></tr>
+    </table>
+    <table class="data-table">
+      <tr><th>传热量 / Heat Duty</th>
+          <td>{{ "%.1f"|format(bank.Q_duty_kW) }} kW</td></tr>
+      <tr><th>外侧传热系数 h_o</th>
+          <td>{{ "%.1f"|format(bank.h_o_W_m2K) }} W/(m²·K)</td></tr>
+      <tr><th>内侧传热系数 h_i</th>
+          <td>{{ "%.1f"|format(bank.h_i_W_m2K) }} W/(m²·K)</td></tr>
+      <tr><th>总传热系数 U_o</th>
+          <td>{{ "%.1f"|format(bank.U_o_W_m2K) }} W/(m²·K)</td></tr>
+      <tr><th>对数平均温差 LMTD</th>
+          <td>{{ "%.1f"|format(bank.LMTD_K) }} K</td></tr>
+      <tr><th>管壁最高温度 / Max Skin</th>
+          <td>{{ "%.1f"|format(bank.T_tube_max_C) }} °C</td></tr>
+    </table>
+  </div>
+  {% endfor %}
+</section>
+{% endif %}
+
+<!-- ===== Temperature Profile ============================================= -->
+<section class="card result-card">
+  <h3>📈 温度概况 / Temperature Profile</h3>
+  <div id="temp-chart" class="chart-container">
+    <canvas id="tempCanvas" width="700" height="280"></canvas>
+  </div>
+</section>
+
+<!-- ===== Actions ========================================================== -->
+<div class="submit-row">
+  <a href="/" class="btn-primary">← 返回输入 / Back to Input</a>
+  <button onclick="window.print()" class="btn-secondary">🖨 打印 / Print</button>
+</div>
+
+<script>
+/* Simple inline SVG/Canvas temperature chart */
+(function () {
+  const canvas = document.getElementById('tempCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  const W = canvas.width, H = canvas.height;
+  const pad = { l: 60, r: 20, t: 20, b: 40 };
+  const cw = W - pad.l - pad.r;
+  const ch = H - pad.t - pad.b;
+
+  // Data points: [label, T_flue_C, T_proc_C]
+  const points = [];
+
+  {% if result.convection_banks %}
+    {% for bank in result.convection_banks|reverse %}
+    points.push(["对流{{ loop.index }}\nConv{{ loop.index }}_in",
+                  {{ bank.T_gas_in_C }}, {{ bank.T_proc_out_C }}]);
+    {% endfor %}
+    points.push(["对流出口\nConv_out",
+                  {{ result.convection_banks[-1].T_gas_out_C }},
+                  {{ result.convection_banks[-1].T_proc_in_C }}]);
+  {% else %}
+    points.push(["BWT", {{ result.T_BWT_C }}, {{ result.radiant.T_process_out_C }}]);
+    points.push(["Stack\n烟囱", {{ result.T_stack_C }}, {{ result.T_proc_out_conv_C }}]);
+  {% endif %}
+
+  const allTemps = points.flatMap(p => [p[1], p[2]]);
+  allTemps.push({{ result.T_BWT_C }}, {{ result.T_AFT_C }});
+  const Tmin = Math.min(...allTemps) - 30;
+  const Tmax = Math.max(...allTemps) + 60;
+
+  function scaleY(T) {
+    return pad.t + ch - (T - Tmin) / (Tmax - Tmin) * ch;
+  }
+
+  // Draw axes
+  ctx.strokeStyle = '#888';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(pad.l, pad.t); ctx.lineTo(pad.l, pad.t + ch);
+  ctx.lineTo(pad.l + cw, pad.t + ch);
+  ctx.stroke();
+
+  // Y axis labels
+  ctx.fillStyle = '#444';
+  ctx.font = '11px sans-serif';
+  ctx.textAlign = 'right';
+  for (let T = Math.ceil(Tmin / 100) * 100; T <= Tmax; T += 100) {
+    const y = scaleY(T);
+    ctx.fillText(T + '°C', pad.l - 5, y + 4);
+    ctx.strokeStyle = '#eee';
+    ctx.beginPath();
+    ctx.moveTo(pad.l, y); ctx.lineTo(pad.l + cw, y);
+    ctx.stroke();
+  }
+
+  // Flue gas line (orange)
+  if (points.length > 1) {
+    ctx.strokeStyle = '#e07820';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    points.forEach((p, i) => {
+      const x = pad.l + i / (points.length - 1) * cw;
+      const y = scaleY(p[1]);
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+    ctx.fillStyle = '#e07820';
+    ctx.textAlign = 'center';
+    ctx.font = '10px sans-serif';
+    ctx.fillText('烟气 / Flue Gas', pad.l + cw * 0.25, pad.t + 15);
+  }
+
+  // Process line (blue)
+  if (points.length > 1) {
+    ctx.strokeStyle = '#1a6fbd';
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    points.forEach((p, i) => {
+      const x = pad.l + i / (points.length - 1) * cw;
+      const y = scaleY(p[2]);
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+    ctx.fillStyle = '#1a6fbd';
+    ctx.textAlign = 'center';
+    ctx.font = '10px sans-serif';
+    ctx.fillText('介质 / Process', pad.l + cw * 0.75, pad.t + 15);
+  }
+
+  // AFT marker
+  ctx.strokeStyle = '#cc2200';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([4, 3]);
+  ctx.beginPath();
+  ctx.moveTo(pad.l, scaleY({{ result.T_AFT_C }}));
+  ctx.lineTo(pad.l + 80, scaleY({{ result.T_AFT_C }}));
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#cc2200';
+  ctx.font = '10px sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('AFT {{ "%.0f"|format(result.T_AFT_C) }}°C', pad.l + 5, scaleY({{ result.T_AFT_C }}) - 3);
+
+})();
+</script>
+{% endblock %}

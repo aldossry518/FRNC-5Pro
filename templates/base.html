@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}FRNC-5Pro – 管式加热炉传热计算{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <span class="logo">🔥 FRNC-5Pro</span>
+      <h1 class="header-title">管式加热炉传热计算软件</h1>
+      <span class="header-sub">Fired Heater Heat Transfer Calculation</span>
+    </div>
+  </header>
+
+  <nav class="nav">
+    <a href="/">输入 / Input</a>
+    <a href="/api/defaults" target="_blank">默认参数 / Defaults</a>
+    <a href="/api/fuels" target="_blank">燃料库 / Fuels</a>
+  </nav>
+
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="footer">
+    <p>FRNC-5Pro &copy; 2024 &nbsp;|&nbsp; 参考: Lobo-Evans (1939) / API STD 560</p>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

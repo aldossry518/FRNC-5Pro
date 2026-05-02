@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+{% block title %}FRNC-5Pro – 输入参数{% endblock %}
+
+{% block content %}
+{% if error %}
+<div class="alert alert-error">❌ 计算错误 / Calculation Error: {{ error }}</div>
+{% endif %}
+
+<form method="POST" action="/calculate" id="heater-form">
+
+  <!-- ===== Section 0: Identification ===================================== -->
+  <section class="card">
+    <h2>📋 项目信息 / Project Information</h2>
+    <div class="grid-2">
+      <div class="field">
+        <label>案例名称 / Case Name</label>
+        <input type="text" name="case_name" value="Case 1" />
+      </div>
+      <div class="field">
+        <label>装置名称 / Heater Service</label>
+        <input type="text" name="heater_service" value="原油加热炉 / Crude Preheater" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Section 1: Fuel & Combustion =================================== -->
+  <section class="card">
+    <h2>🔥 燃料与燃烧 / Fuel &amp; Combustion</h2>
+    <div class="grid-3">
+      <div class="field">
+        <label>燃料类型 / Fuel Type</label>
+        <select name="fuel_type" id="fuel_type">
+          {% for key, fuel in fuels.items() %}
+          <option value="{{ key }}" {% if key == 'natural_gas' %}selected{% endif %}>
+            {{ fuel.name }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label>燃料量 / Fuel Flow Rate <span class="unit">(kg/s)</span></label>
+        <input type="number" name="W_fuel_kg_s" value="1.0" step="0.01" min="0.001" />
+      </div>
+      <div class="field">
+        <label>过量空气 / Excess Air <span class="unit">(%)</span></label>
+        <input type="number" name="excess_air_pct" value="15" step="1" min="0" max="100" />
+      </div>
+      <div class="field">
+        <label>空气预热温度 / Air Preheat Temp <span class="unit">(°C)</span></label>
+        <input type="number" name="T_air_C" value="15" step="5" />
+      </div>
+      <div class="field">
+        <label>热损失 / Heat Loss <span class="unit">(%)</span></label>
+        <input type="number" name="loss_fraction_pct" value="2" step="0.5" min="0" max="10" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Section 2: Firebox ============================================= -->
+  <section class="card">
+    <h2>🏭 炉膛尺寸 / Firebox Geometry</h2>
+    <div class="grid-3">
+      <div class="field">
+        <label>炉型 / Firebox Type</label>
+        <select name="firebox_type">
+          <option value="box">箱形 / Box</option>
+          <option value="cabin">舱形 / Cabin (A-Frame)</option>
+          <option value="cylindrical">圆筒形 / Cylindrical</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>炉长 / Length <span class="unit">(m)</span></label>
+        <input type="number" name="firebox_length_m" value="10" step="0.5" min="1" />
+      </div>
+      <div class="field">
+        <label>炉宽 / Width <span class="unit">(m)</span></label>
+        <input type="number" name="firebox_width_m" value="4" step="0.5" min="1" />
+      </div>
+      <div class="field">
+        <label>炉高 / Height <span class="unit">(m)</span></label>
+        <input type="number" name="firebox_height_m" value="6" step="0.5" min="1" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Section 3: Radiant Tubes ======================================= -->
+  <section class="card">
+    <h2>⚙️ 辐射管 / Radiant Tubes</h2>
+    <div class="grid-3">
+      <div class="field">
+        <label>辐射管数量 / No. Radiant Tubes</label>
+        <input type="number" name="n_tubes_radiant" value="24" step="1" min="1" />
+      </div>
+      <div class="field">
+        <label>外径 / OD <span class="unit">(mm)</span></label>
+        <input type="number" name="rad_tube_od_mm" value="168.3" step="0.1" min="10" />
+      </div>
+      <div class="field">
+        <label>壁厚 / Wall Thickness <span class="unit">(mm)</span></label>
+        <input type="number" name="rad_tube_wt_mm" value="8.0" step="0.5" min="1" />
+      </div>
+      <div class="field">
+        <label>管间距 / Pitch <span class="unit">(mm)</span></label>
+        <input type="number" name="rad_tube_pitch_mm" value="336.6" step="1" min="10" />
+      </div>
+      <div class="field">
+        <label>排数 / No. Rows</label>
+        <input type="number" name="n_radiant_rows" value="1" step="1" min="1" max="4" />
+      </div>
+      <div class="field">
+        <label>有效管长 / Heated Length <span class="unit">(m)</span></label>
+        <input type="number" name="rad_tube_length_m" value="10.0" step="0.5" min="1" />
+      </div>
+      <div class="field">
+        <label>管材 / Tube Material</label>
+        <select name="rad_tube_material">
+          {% for key, mat in materials.items() %}
+          <option value="{{ key }}" {% if key == 'Cr5Mo' %}selected{% endif %}>
+            {{ mat.name }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label>峰值热流密度系数 / Peak Flux Factor</label>
+        <input type="number" name="peak_flux_factor" value="1.8" step="0.1" min="1.0" max="3.0" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Section 4: Process Fluid ======================================= -->
+  <section class="card">
+    <h2>💧 介质参数 / Process Fluid</h2>
+    <div class="grid-3">
+      <div class="field">
+        <label>介质类型 / Fluid Type</label>
+        <select name="process_fluid">
+          {% for key, fl in fluids.items() %}
+          <option value="{{ key }}" {% if key == 'crude_oil' %}selected{% endif %}>
+            {{ fl.name }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="field">
+        <label>质量流量 / Mass Flow <span class="unit">(kg/s)</span></label>
+        <input type="number" name="W_process_kg_s" value="50" step="1" min="0.1" />
+      </div>
+      <div class="field">
+        <label>入口温度 / Inlet Temp <span class="unit">(°C)</span></label>
+        <input type="number" name="T_proc_in_C" value="100" step="5" />
+      </div>
+      <div class="field">
+        <label>出口温度 / Outlet Temp <span class="unit">(°C, 留空=计算)</span></label>
+        <input type="number" name="T_proc_out_C" placeholder="留空=计算 / Leave blank" step="5" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Section 5: Convection Banks ==================================== -->
+  <section class="card" id="conv-section">
+    <h2>🌡️ 对流室管排 / Convection Banks
+      <button type="button" class="btn-sm" id="add-bank-btn" onclick="addBank()">
+        + 添加管排 / Add Bank
+      </button>
+    </h2>
+    <div id="conv-banks-container">
+      <!-- Dynamically added bank forms go here -->
+    </div>
+  </section>
+
+  <!-- ===== Submit ========================================================= -->
+  <div class="submit-row">
+    <button type="submit" class="btn-primary">
+      🧮 开始计算 / Calculate
+    </button>
+    <button type="button" class="btn-secondary" onclick="loadDemo()">
+      📐 加载示例 / Load Demo
+    </button>
+  </div>
+
+</form>
+{% endblock %}
